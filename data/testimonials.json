@@ -1,0 +1,46 @@
+{
+  "testimonials": [
+    {
+      "id": "t1",
+      "name": "Rafiq Ahmed",
+      "rating": 5,
+      "comment": "The smoked brisket here is absolutely incredible! Tender, flavorful, and melts in your mouth. Best BBQ spot in Dhanmondi, no doubt.",
+      "active": true
+    },
+    {
+      "id": "t2",
+      "name": "Nusrat Jahan",
+      "rating": 5,
+      "comment": "Bangla Kuthir section is a hidden gem — the Nababi Thali is a royal feast! Love the cozy ambiance and the lakeside view.",
+      "active": true
+    },
+    {
+      "id": "t3",
+      "name": "Tanvir Hasan",
+      "rating": 4,
+      "comment": "Tried the Italian Ground Beef Steak from Pushkin menu — absolutely world-class! The matcha drinks are unique and refreshing too.",
+      "active": true
+    },
+    {
+      "id": "t4",
+      "name": "Sadia Rahman",
+      "rating": 5,
+      "comment": "Best date night spot in Dhaka! The Browny on Fire dessert is a showstopper. Premium feel at reasonable prices.",
+      "active": true
+    },
+    {
+      "id": "t5",
+      "name": "Imran Khan",
+      "rating": 5,
+      "comment": "The Smoke House Quick Bite Platter 'Dudes' is perfect for hangouts with friends. Huge portions and amazing smoky flavors!",
+      "active": true
+    },
+    {
+      "id": "t6",
+      "name": "Fatima Akter",
+      "rating": 4,
+      "comment": "Love their specialty teas, especially the Mountain Flower Tea. The whole experience feels so premium and relaxing by the lake.",
+      "active": true
+    }
+  ]
+}

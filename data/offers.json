@@ -1,0 +1,15 @@
+{
+  "offers": [
+    {
+      "id": "o1",
+      "title": "Grand Opening Special!",
+      "description": "Get 15% OFF on your first visit. Show this page to avail!",
+      "code": "WELCOME15",
+      "discount": 15,
+      "bannerImage": null,
+      "startDate": "2026-04-01",
+      "endDate": "2026-06-30",
+      "active": true
+    }
+  ]
+}

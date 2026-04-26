@@ -1,0 +1,4 @@
+(Compited -> Skipped) 1. a beautiful eyecaty loading with restaurant name before loading the website.
+(Compited -> Skipped) 2. Use real images on evry section and places insted of placeholder images. (Eyecatchy vibraint relevent to restaurant images)
+(Compited -> Skipped) 3. Hero section should be more attractive and eyecatchy. (Use real images of restaurant and food) (if possible use slider of images)
+4. 
