@@ -1,0 +1,14 @@
+.container {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* Sits completely behind content */
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  user-select: none;
+  opacity: 0.15; /* Subdued opacity so it remains a background effect */
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+}

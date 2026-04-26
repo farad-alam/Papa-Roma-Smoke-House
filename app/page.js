@@ -4,12 +4,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Flame, ArrowRight, Star, MapPin, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { AnimateOnScroll, StaggerContainer, StaggerItem } from './components/ui/AnimateOnScroll';
 import siteConfig from '@/data/siteConfig.json';
 import menuData from '@/data/menus.json';
 import testimonialData from '@/data/testimonials.json';
 import styles from './page.module.css';
+import FloatingFoodParticles from './components/ui/FloatingFoodParticles';
 
 /* ===================== HERO SLIDER ===================== */
 const heroSlides = [
@@ -45,7 +46,7 @@ function HeroSection() {
   };
 
   useEffect(() => {
-    const interval = setInterval(nextSlide, 6000);
+    const interval = setInterval(nextSlide, 2500);
     return () => clearInterval(interval);
   }, [nextSlide]);
 
@@ -142,9 +143,6 @@ function HeroSection() {
 
         {/* Slider controls */}
         <div className={styles.sliderControls}>
-          <button onClick={prevSlide} className={styles.heroSliderBtn} aria-label="Previous slide">
-            <ChevronLeft size={18} />
-          </button>
           <div className={styles.heroDots}>
             {heroSlides.map((_, i) => (
               <button
@@ -155,9 +153,6 @@ function HeroSection() {
               />
             ))}
           </div>
-          <button onClick={nextSlide} className={styles.heroSliderBtn} aria-label="Next slide">
-            <ChevronRight size={18} />
-          </button>
         </div>
 
         {/* Stats */}
@@ -177,49 +172,103 @@ function HeroSection() {
   );
 }
 
-/* ===================== ABOUT ===================== */
-function AboutSection() {
+/* ===================== MARQUEE ===================== */
+function MarqueeSection() {
+  const text = "PAPA ROMA SMOKE HOUSE — ";
+
   return (
-    <section className={`section ${styles.about}`}>
+    <section className={styles.marqueeContainer} aria-hidden="true">
+      <div className={styles.marqueeText}>
+        {/* Repeat 10 times to ensure it covers long widths correctly, transforming 50% loops it seamlessly */}
+        {text.repeat(10)}
+      </div>
+    </section>
+  );
+}
+
+/* ===================== HOT ITEMS ===================== */
+function HotItemsSection() {
+  const items = [
+    {
+      title: "The Papa Roma Platter",
+      desc: "Our signature meat platter with brisket, ribs, and sausages.",
+      image: "/images/hero-platter.png",
+      large: true
+    },
+    {
+      title: "Brisket Burger",
+      desc: "Slow-smoked pulled brisket.",
+      image: "/images/food-burger.png",
+      large: false
+    },
+    {
+      title: "Creamy Alfredo",
+      desc: "Authentic Italian style.",
+      image: "/images/food-pasta.png",
+      large: false
+    },
+    {
+      title: "Matcha Tiramisu",
+      desc: "A fiery finish.",
+      image: "/images/food-dessert.png",
+      large: false
+    }
+  ];
+
+  return (
+    <section className={`section ${styles.hotItems}`}>
       <div className="container">
-        <div className={styles.aboutGrid}>
-          <AnimateOnScroll direction="left" className={styles.aboutImage}>
-            <div className={styles.aboutImageInner}>
-              <Image
-                src="/images/about-cooking.png"
-                alt="Chef smoking meat at Papa Roma"
-                fill
-                style={{ objectFit: 'cover' }}
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-              <div className={styles.aboutImageOverlay}></div>
+        <AnimateOnScroll>
+          <div className="section-header">
+            <span className="section-label">Trending Now</span>
+            <h2 className="section-title">Hot <span className="gold-text">Picks</span></h2>
+            <p className="section-subtitle">Our guests' absolute favorites this week</p>
+          </div>
+        </AnimateOnScroll>
+        <StaggerContainer className={styles.hotGrid}>
+          {items.map((item, idx) => (
+            <StaggerItem key={idx} className={styles.hotCardWrapper}>
+              <Link href="/menu/smoke-house" className={styles.hotCard}>
+                <div className={styles.hotImage}>
+                  <Image src={item.image} alt={item.title} fill style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 50vw" />
+                </div>
+                <div className={styles.hotOverlay}>
+                  <h3 className={styles.hotTitle}>{item.title}</h3>
+                  <p className={styles.hotDesc}>{item.desc}</p>
+                </div>
+              </Link>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
+/* ===================== RECENT OFFER ===================== */
+function OfferSection() {
+  const { restaurant } = siteConfig;
+  return (
+    <section className={styles.offer}>
+      <div className="container">
+        <AnimateOnScroll>
+          <div className={styles.offerCard}>
+            <div className={styles.offerImage}>
+              <Image src="/images/hero-brisket.png" alt="Special Offer" fill style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 100vw" />
             </div>
-          </AnimateOnScroll>
-          <AnimateOnScroll direction="right" className={styles.aboutContent}>
-            <span className="section-label">Our Story</span>
-            <h2 className="section-title">The Art of <span className="gold-text">Smoke</span></h2>
-            <p className={styles.aboutText}>
-              Nestled beside the serene Dhanmondi Lake, Papa Roma Smoke House brings you an extraordinary dining experience where traditional smoking techniques meet bold, contemporary flavors.
-            </p>
-            <p className={styles.aboutText}>
-              Our pitmasters slow-smoke premium meats for hours using aged hardwood, creating tender, flavorful dishes that tell a story of patience and passion. From our signature Texas-style brisket to authentic Bengali specialties at Bangla Kuthir, every bite is a journey.
-            </p>
-            <div className={styles.aboutFeatures}>
-              <div className={styles.feature}>
-                <div className={styles.featureIcon}>🔥</div>
-                <div><h4>Wood-Fired</h4><p>Aged hardwood smoking</p></div>
-              </div>
-              <div className={styles.feature}>
-                <div className={styles.featureIcon}>🥩</div>
-                <div><h4>Premium Cuts</h4><p>Hand-selected meats</p></div>
-              </div>
-              <div className={styles.feature}>
-                <div className={styles.featureIcon}>🌿</div>
-                <div><h4>Fresh Spices</h4><p>Locally sourced ingredients</p></div>
-              </div>
+            <div className={styles.offerOverlay}></div>
+            <div className={styles.offerContent}>
+              <span className={styles.offerBadge}>Limited Time Offer</span>
+              <h2 className={styles.offerTitle}>Weekend <span className="gold-text">Fiesta</span></h2>
+              <p className={styles.offerDesc}>
+                Enjoy 20% off on our signature Smoke House Platters every weekend. Gather your friends and family for a riverside feast they won't forget.
+              </p>
+              <a href={`https://wa.me/${restaurant.whatsapp}`} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+                Claim Offer <ArrowRight size={16} />
+              </a>
             </div>
-          </AnimateOnScroll>
-        </div>
+          </div>
+        </AnimateOnScroll>
       </div>
     </section>
   );
@@ -474,8 +523,11 @@ function MapCtaSection() {
 export default function HomePage() {
   return (
     <>
+      <FloatingFoodParticles />
       <HeroSection />
-      <AboutSection />
+      <MarqueeSection />
+      <HotItemsSection />
+      <OfferSection />
       <MenuCategoriesSection />
       <FeaturedDishesSection />
       <TestimonialsSection />

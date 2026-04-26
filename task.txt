@@ -1,4 +1,13 @@
-(Compited -> Skipped) 1. a beautiful eyecaty loading with restaurant name before loading the website.
-(Compited -> Skipped) 2. Use real images on evry section and places insted of placeholder images. (Eyecatchy vibraint relevent to restaurant images)
-(Compited -> Skipped) 3. Hero section should be more attractive and eyecatchy. (Use real images of restaurant and food) (if possible use slider of images)
-4. 
+(Completed -> Skipped) 1. a beautiful eyecaty loading with restaurant name before loading the website.
+(Completed -> Skipped) 2. Use real images on evry section and places insted of placeholder images. (Eyecatchy vibraint relevent to restaurant images)
+(Completed -> Skipped) 3. Hero section should be more attractive and eyecatchy. (Use real images of restaurant and food) (if possible use slider of images)
+(Completed -> Skipped) 4. use diffrent floating food related particles around the home page. (like burger, pizza, pasta, etc)
+(Completed -> Skipped) 5. Display big card with Hot items in a Hireacrcial grid (max 4 items) (Eyecatchy vibraint relevent to restaurant images)
+(Completed -> Skipped) 6 A single large big card with recent offer ()
+
+
+______________
+Improvement needed:
+(Completed -> Skipped) 1. on the loading screen , make the proggress bar more visible, now it look thin. othewise the loading screen is perfect.
+(Completed -> Skipped) 2. on the hero section images, maybe stay 4s long, can it possible to 2.5s? 
+(Completed -> Skipped) 3. the image slider have the arrows, but did not want it.
