@@ -26,6 +26,9 @@ export default function Footer() {
 
   return (
     <footer className={styles.footer}>
+      {/* Animated Glow Orb */}
+      <div className={styles.glowOrb}></div>
+
       {/* Decorative top border */}
       <div className={styles.topBorder}></div>
 
