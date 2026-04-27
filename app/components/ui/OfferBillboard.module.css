@@ -1,0 +1,223 @@
+.billboardSection {
+  padding: var(--space-xl) 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.billboardContainer {
+  position: relative;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #1a0a0a 0%, #3a1515 50%, #1a0a0a 100%);
+  border: 1px solid rgba(212, 168, 83, 0.2);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  min-height: 400px;
+}
+
+.bgGlow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 70% 50%, rgba(212, 168, 83, 0.15) 0%, transparent 60%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--space-2xl);
+  gap: var(--space-xl);
+}
+
+.textContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.tagline {
+  font-family: var(--font-accent);
+  color: var(--color-gold);
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: var(--space-sm);
+  font-style: italic;
+}
+
+.mainTitle {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  line-height: 0.9;
+  margin-bottom: var(--space-md);
+  color: #fff;
+}
+
+.titleLine1 {
+  font-size: clamp(3rem, 6vw, 6rem);
+  font-weight: 900;
+  display: inline-block;
+  margin-right: var(--space-sm);
+}
+
+.titleSubtitle {
+  font-size: clamp(1rem, 2vw, 1.8rem);
+  font-weight: 700;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.8);
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 0.5em;
+}
+
+.titleLine2 {
+  font-size: clamp(3rem, 6vw, 6rem);
+  font-weight: 900;
+}
+
+.description {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.8);
+  max-width: 500px;
+  margin-bottom: var(--space-xl);
+  line-height: 1.5;
+}
+
+.contactInfo {
+  display: flex;
+  gap: var(--space-lg);
+  margin-top: auto;
+}
+
+.contactItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.imageContent {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.imageWrapper {
+  position: relative;
+  width: 120%; /* Makes image pop out a bit */
+  height: 120%;
+  aspect-ratio: 1;
+  transform: scale(1.1) translateX(5%);
+  z-index: 1;
+}
+
+.badge {
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  width: 120px;
+  height: 120px;
+  background: #fdd835; /* Bright yellow like the inspiration */
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); /* Starburst */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transform: rotate(15deg);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+  animation: float 3s ease-in-out infinite;
+}
+
+.badgeInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-family: var(--font-heading);
+  font-weight: 900;
+  line-height: 1;
+  transform: rotate(-15deg); /* Counter-rotate text so it's readable */
+}
+
+.badgeInner span:first-child {
+  font-size: 2rem;
+}
+
+.badgeInner span:last-child {
+  font-size: 1.2rem;
+}
+
+@keyframes float {
+  0% { transform: rotate(15deg) translateY(0px); }
+  50% { transform: rotate(15deg) translateY(-10px); }
+  100% { transform: rotate(15deg) translateY(0px); }
+}
+
+@media (max-width: 992px) {
+  .content {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-xl);
+  }
+
+  .textContent {
+    align-items: center;
+  }
+
+  .titleSubtitle {
+    display: block;
+    margin-top: 0;
+  }
+
+  .contactInfo {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .imageWrapper {
+    width: 100%;
+    height: 300px;
+    transform: none;
+  }
+
+  .badge {
+    top: -20px;
+    right: 0;
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .billboardSection {
+    padding: var(--space-md) 0;
+  }
+
+  .titleLine1, .titleLine2 {
+    font-size: 2.5rem;
+  }
+
+  .contactInfo {
+    gap: var(--space-sm);
+  }
+}

@@ -9,27 +9,41 @@ import { AnimateOnScroll, StaggerContainer, StaggerItem } from './components/ui/
 import siteConfig from '@/data/siteConfig.json';
 import menuData from '@/data/menus.json';
 import testimonialData from '@/data/testimonials.json';
+import { getItemImage } from '@/data/itemImages';
 import styles from './page.module.css';
 import FloatingFoodParticles from './components/ui/FloatingFoodParticles';
+import OfferBillboard from './components/ui/OfferBillboard';
+
+/* ===================== ANIMATED COUNTER ===================== */
+function AnimatedCounter({ to }) {
+  const [count, setCount] = useState(0);
+  
+  useEffect(() => {
+    let animationFrame;
+    const duration = 2500;
+    const startTime = performance.now();
+    
+    const update = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.floor(easeProgress * to));
+      
+      if (progress < 1) {
+        animationFrame = requestAnimationFrame(update);
+      }
+    };
+    
+    animationFrame = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [to]);
+  
+  return <>{count}</>;
+}
 
 /* ===================== HERO SLIDER ===================== */
-const heroSlides = [
-  {
-    image: '/images/hero-brisket.png',
-    title: ['Where', 'Smoke', 'Meets', 'Flavor'],
-    subtitle: 'Premium wood-smoked BBQ crafted with passion at Dhanmondi\'s lakeside',
-  },
-  {
-    image: '/images/hero-platter.png',
-    title: ['Taste', 'the', 'Art of', 'Fire'],
-    subtitle: 'From Texas-style brisket to authentic Bengali specialties — a culinary journey',
-  },
-  {
-    image: '/images/hero-ambiance.png',
-    title: ['Dine', 'by', 'the', 'Lake'],
-    subtitle: 'An unforgettable dining experience with four unique menus under one roof',
-  },
-];
+// Hero slides come from siteConfig.json — edit there to update
+const heroSlides = siteConfig.heroSlides;
 
 function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -46,7 +60,7 @@ function HeroSection() {
   };
 
   useEffect(() => {
-    const interval = setInterval(nextSlide, 2500);
+    const interval = setInterval(nextSlide, 3500);
     return () => clearInterval(interval);
   }, [nextSlide]);
 
@@ -135,7 +149,7 @@ function HeroSection() {
             href={`https://wa.me/${siteConfig.restaurant.whatsapp}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn btn-secondary"
+            className={`btn btn-secondary ${styles.glowingBtn}`}
           >
             Reserve a Table
           </a>
@@ -157,11 +171,11 @@ function HeroSection() {
 
         {/* Stats */}
         <div className={styles.heroStats}>
-          <div className={styles.stat}><span className={styles.statNum}>4</span><span className={styles.statLabel}>Unique Menus</span></div>
+          <div className={styles.stat}><span className={styles.statNum}><AnimatedCounter to={4} /></span><span className={styles.statLabel}>Unique Menus</span></div>
           <div className={styles.statDivider}></div>
-          <div className={styles.stat}><span className={styles.statNum}>80+</span><span className={styles.statLabel}>Dishes</span></div>
+          <div className={styles.stat}><span className={styles.statNum}><AnimatedCounter to={80} />+</span><span className={styles.statLabel}>Dishes</span></div>
           <div className={styles.statDivider}></div>
-          <div className={styles.stat}><span className={styles.statNum}>4★</span><span className={styles.statLabel}>Lakeside</span></div>
+          <div className={styles.stat}><span className={styles.statNum}><AnimatedCounter to={4} />★</span><span className={styles.statLabel}>Lakeside</span></div>
         </div>
       </div>
 
@@ -174,12 +188,12 @@ function HeroSection() {
 
 /* ===================== MARQUEE ===================== */
 function MarqueeSection() {
-  const text = "PAPA ROMA SMOKE HOUSE — ";
+  // Brand name comes from siteConfig.json — edit there to update
+  const text = `${siteConfig.restaurant.name.toUpperCase()} — `;
 
   return (
     <section className={styles.marqueeContainer} aria-hidden="true">
       <div className={styles.marqueeText}>
-        {/* Repeat 10 times to ensure it covers long widths correctly, transforming 50% loops it seamlessly */}
         {text.repeat(10)}
       </div>
     </section>
@@ -188,32 +202,26 @@ function MarqueeSection() {
 
 /* ===================== HOT ITEMS ===================== */
 function HotItemsSection() {
-  const items = [
-    {
-      title: "The Papa Roma Platter",
-      desc: "Our signature meat platter with brisket, ribs, and sausages.",
-      image: "/images/hero-platter.png",
-      large: true
-    },
-    {
-      title: "Brisket Burger",
-      desc: "Slow-smoked pulled brisket.",
-      image: "/images/food-burger.png",
-      large: false
-    },
-    {
-      title: "Creamy Alfredo",
-      desc: "Authentic Italian style.",
-      image: "/images/food-pasta.png",
-      large: false
-    },
-    {
-      title: "Matcha Tiramisu",
-      desc: "A fiery finish.",
-      image: "/images/food-dessert.png",
-      large: false
-    }
-  ];
+  // Hot Picks item IDs come from siteConfig.json — edit hotPicksItemIds to change which items appear
+  // Item data (name, desc, price, menuSlug) comes from menus.json
+  // Item images come from data/itemImages.js
+  // Change any of those three sources to update the section everywhere
+  const allItems = menuData.menuTypes.flatMap((menu) =>
+    menu.categories.flatMap((cat) =>
+      cat.items.map((item) => ({ ...item, menuSlug: menu.slug }))
+    )
+  );
+
+  const items = siteConfig.hotPicksItemIds
+    .map((id) => allItems.find((item) => item.id === id))
+    .filter(Boolean)
+    .map((item) => ({
+      title: item.name,
+      desc: item.description || '',
+      image: getItemImage(item.id),
+      href: `/menu/${item.menuSlug}`,
+      price: item.price,
+    }));
 
   return (
     <section className={`section ${styles.hotItems}`}>
@@ -222,13 +230,13 @@ function HotItemsSection() {
           <div className="section-header">
             <span className="section-label">Trending Now</span>
             <h2 className="section-title">Hot <span className="gold-text">Picks</span></h2>
-            <p className="section-subtitle">Our guests' absolute favorites this week</p>
+            <p className="section-subtitle">Our guests&apos; absolute favorites this week</p>
           </div>
         </AnimateOnScroll>
         <StaggerContainer className={styles.hotGrid}>
           {items.map((item, idx) => (
             <StaggerItem key={idx} className={styles.hotCardWrapper}>
-              <Link href="/menu/smoke-house" className={styles.hotCard}>
+              <Link href={item.href} className={styles.hotCard}>
                 <div className={styles.hotImage}>
                   <Image src={item.image} alt={item.title} fill style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 50vw" />
                 </div>
@@ -247,30 +255,29 @@ function HotItemsSection() {
 
 /* ===================== RECENT OFFER ===================== */
 function OfferSection() {
-  const { restaurant } = siteConfig;
   return (
-    <section className={styles.offer}>
-      <div className="container">
+    <div className="container" style={{ padding: '0 20px', marginBottom: 'var(--space-2xl)' }}>
+      {siteConfig.imageBanner?.enabled && (
         <AnimateOnScroll>
-          <div className={styles.offerCard}>
-            <div className={styles.offerImage}>
-              <Image src="/images/hero-brisket.png" alt="Special Offer" fill style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 100vw" />
+          <Link href={siteConfig.imageBanner.link || '#'}>
+            <div style={{ position: 'relative', width: '100%', height: 'auto', aspectRatio: '3/1', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)', cursor: 'pointer' }}>
+              <Image 
+                src={siteConfig.imageBanner.imageSrc} 
+                alt="Special Offer Banner" 
+                fill 
+                style={{ objectFit: 'cover' }} 
+                sizes="100vw"
+                priority
+              />
             </div>
-            <div className={styles.offerOverlay}></div>
-            <div className={styles.offerContent}>
-              <span className={styles.offerBadge}>Limited Time Offer</span>
-              <h2 className={styles.offerTitle}>Weekend <span className="gold-text">Fiesta</span></h2>
-              <p className={styles.offerDesc}>
-                Enjoy 20% off on our signature Smoke House Platters every weekend. Gather your friends and family for a riverside feast they won't forget.
-              </p>
-              <a href={`https://wa.me/${restaurant.whatsapp}`} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-                Claim Offer <ArrowRight size={16} />
-              </a>
-            </div>
-          </div>
+          </Link>
         </AnimateOnScroll>
-      </div>
-    </section>
+      )}
+
+      {siteConfig.currentOffer?.enabled && (
+        <OfferBillboard offer={siteConfig.currentOffer} />
+      )}
+    </div>
   );
 }
 
@@ -495,7 +502,7 @@ function MapCtaSection() {
         <div className={styles.mapGrid}>
           <AnimateOnScroll direction="left" className={styles.mapEmbed}>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3652.0!2d90.3754!3d23.7461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b8a7a8c2e28d%3A0x0!2zMjPCsDQ0JzQ2LjAiTiA5MMKwMjInMzEuNCJF!5e0!3m2!1sen!2sbd!4v1600000000000"
+              src={siteConfig.restaurant.mapEmbed}
               width="100%" height="400" style={{ border: 0, borderRadius: 'var(--radius-lg)' }}
               allowFullScreen="" loading="lazy" referrerPolicy="no-referrer-when-downgrade"
               title="Papa Roma Smoke House Location"

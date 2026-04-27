@@ -4,14 +4,32 @@
     "tagline": "Where Smoke Meets Flavor",
     "description": "Experience the art of slow-smoked perfection at Dhanmondi's lakeside. From Texas-style BBQ to authentic Bengali cuisine and international flavors — Papa Roma brings you a culinary journey like no other.",
     "address": "5/A Satmasjid Road, Lake Side, Dhanmondi, Dhaka-1209",
-    "phone": "+8801501223344",
-    "whatsapp": "8801501223344",
+    "phone": "+8801339-942735",
+    "whatsapp": "8801339942735",
     "email": "info@paparomasmokehouse.com",
     "hours": "Everyday 4:00 PM – 12:00 AM",
     "facebook": "https://www.facebook.com/share/1J1zcw7hUq/?mibextid=wwXIfr",
     "instagram": "",
     "mapEmbed": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3652.2!2d90.3754!3d23.7461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjPCsDQ0JzQ2LjAiTiA5MMKwMjInMzEuNCJF!5e0!3m2!1sen!2sbd!4v1600000000000"
   },
+  "heroSlides": [
+    {
+      "image": "/images/hero-brisket.png",
+      "title": ["Where", "Smoke", "Meets", "Flavor"],
+      "subtitle": "Premium wood-smoked BBQ crafted with passion at Dhanmondi's lakeside"
+    },
+    {
+      "image": "/images/hero-platter.png",
+      "title": ["Taste", "the", "Art of", "Fire"],
+      "subtitle": "From Texas-style brisket to authentic Bengali specialties — a culinary journey"
+    },
+    {
+      "image": "/images/hero-ambiance.png",
+      "title": ["Dine", "by", "the", "Lake"],
+      "subtitle": "An unforgettable dining experience with four unique menus under one roof"
+    }
+  ],
+  "hotPicksItemIds": ["pl1", "bs1", "pm2", "ds8"],
   "navLinks": [
     { "label": "Home", "href": "/" },
     { "label": "Smoke House", "href": "/menu/smoke-house" },
@@ -20,5 +38,23 @@
     { "label": "Beverages", "href": "/menu/beverages" },
     { "label": "Gallery", "href": "/gallery" },
     { "label": "Contact", "href": "/contact" }
-  ]
+  ],
+  "currentOffer": {
+    "enabled": false,
+    "tagline": "Special Offer",
+    "title1": "BUY 1",
+    "titleSubtitle": "HOT SPICY PIZZA",
+    "title2": "GET 1 FREE*",
+    "description": "Limited time offer only available this weekend.",
+    "badgeText": "50% OFF",
+    "image": "/images/transparent-pizza.png",
+    "phone": "+8801501223344",
+    "website": "paparomasmokehouse.com"
+  },
+  "imageBanner": {
+    "enabled": true,
+    "imageSrc": "/images/banar/burger-offer.png",
+    "link": "/menu/smoke-house"
+  }
 }
+

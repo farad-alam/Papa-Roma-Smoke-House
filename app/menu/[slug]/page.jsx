@@ -2,10 +2,12 @@
 
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { Flame, ArrowLeft, Download, Search } from 'lucide-react';
 import { AnimateOnScroll, StaggerContainer, StaggerItem } from '@/app/components/ui/AnimateOnScroll';
 import menuData from '@/data/menus.json';
+import { getItemImage } from '@/data/itemImages';
 import styles from './menu.module.css';
 
 export default function MenuPage() {
@@ -110,29 +112,41 @@ export default function MenuPage() {
                 {cat.items.map((item) => (
                   <StaggerItem key={item.id}>
                     <div className={`${styles.menuItem} ${item.featured ? styles.menuItemFeatured : ''}`}>
-                      <div className={styles.itemTop}>
-                        <div className={styles.itemIcon}>
-                          <Flame size={16} />
-                        </div>
-                        <div className={styles.itemInfo}>
-                          <h3 className={styles.itemName}>
-                            {item.name}
-                            {item.featured && <span className={styles.featuredBadge}>Popular</span>}
-                          </h3>
-                          {item.nameBn && (
-                            <span className={styles.itemNameBn}>{item.nameBn}</span>
-                          )}
-                          {item.description && (
-                            <p className={styles.itemDesc}>{item.description}</p>
-                          )}
-                        </div>
+                      <div className={styles.itemImageWrapper}>
+                        <Image 
+                          src={getItemImage(item.id)} 
+                          alt={item.name} 
+                          fill 
+                          style={{ objectFit: 'cover' }} 
+                          className={styles.itemImage}
+                          sizes="(max-width: 768px) 100vw, 300px" 
+                        />
                       </div>
-                      <div className={styles.itemBottom}>
-                        <span className={styles.itemPrice}>
-                          ৳{item.price}
-                          {item.priceAlt && <span className={styles.priceAlt}> / ৳{item.priceAlt}</span>}
-                        </span>
-                        {item.unit && <span className={styles.itemUnit}>{item.unit}</span>}
+                      <div className={styles.itemContent}>
+                        <div className={styles.itemTop}>
+                          <div className={styles.itemIcon}>
+                            <Flame size={16} />
+                          </div>
+                          <div className={styles.itemInfo}>
+                            <h3 className={styles.itemName}>
+                              {item.name}
+                              {item.featured && <span className={styles.featuredBadge}>Popular</span>}
+                            </h3>
+                            {item.nameBn && (
+                              <span className={styles.itemNameBn}>{item.nameBn}</span>
+                            )}
+                            {item.description && (
+                              <p className={styles.itemDesc}>{item.description}</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className={styles.itemBottom}>
+                          <span className={styles.itemPrice}>
+                            ৳{item.price}
+                            {item.priceAlt && <span className={styles.priceAlt}> / ৳{item.priceAlt}</span>}
+                          </span>
+                          {item.unit && <span className={styles.itemUnit}>{item.unit}</span>}
+                        </div>
                       </div>
                     </div>
                   </StaggerItem>
