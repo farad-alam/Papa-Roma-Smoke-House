@@ -2,9 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Flame } from 'lucide-react';
 import siteConfig from '@/data/siteConfig.json';
+import menuData from '@/data/menus.json';
+import { getItemImage } from '@/data/itemImages';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
@@ -43,16 +46,58 @@ export default function Navbar() {
 
         {/* Desktop Navigation */}
         <ul className={styles.navLinks}>
-          {siteConfig.navLinks.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className={`${styles.navLink} ${pathname === link.href ? styles.active : ''}`}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
+          {siteConfig.navLinks.map((link) => {
+            // Check if this link corresponds to a menu category
+            const isMenuLink = link.href.startsWith('/menu/');
+            const menuSlug = isMenuLink ? link.href.replace('/menu/', '') : null;
+            const menuCategory = menuSlug ? menuData.menuTypes.find(m => m.slug === menuSlug) : null;
+            
+            // Get up to 4 items from the first category of this menu to feature
+            const featuredItems = menuCategory 
+              ? menuCategory.categories[0]?.items.slice(0, 4) || []
+              : [];
+
+            return (
+              <li key={link.href} className={styles.navItem}>
+                <Link
+                  href={link.href}
+                  className={`${styles.navLink} ${pathname === link.href ? styles.active : ''}`}
+                >
+                  {link.label}
+                </Link>
+                
+                {/* Mega Menu Dropdown */}
+                {isMenuLink && menuCategory && featuredItems.length > 0 && (
+                  <div className={styles.megaMenu}>
+                    <div className={styles.megaGrid}>
+                      {featuredItems.map((item, index) => (
+                        <Link 
+                          href={`${link.href}#${item.id}`} 
+                          key={item.id} 
+                          className={styles.megaItem}
+                          style={{ animationDelay: `${index * 0.15}s` }}
+                        >
+                          <div className={styles.megaImageWrapper}>
+                            <Image 
+                              src={getItemImage(item.id)} 
+                              alt={item.name} 
+                              fill 
+                              style={{ objectFit: 'cover' }}
+                              className={styles.megaItemImage}
+                            />
+                          </div>
+                          <h4 className={styles.megaItemName}>{item.name}</h4>
+                          <span className={styles.megaItemPrice}>
+                            {siteConfig.restaurant.currency} {item.price} {item.unit ? `(${item.unit})` : ''}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
         {/* CTA Button */}

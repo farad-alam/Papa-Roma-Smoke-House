@@ -447,14 +447,6 @@ function TestimonialsSection() {
 
   return (
     <section className={`section ${styles.testimonials}`}>
-      <div className={styles.testimonialBg}>
-        <Image
-          src="/images/restaurant-exterior.png"
-          alt="Papa Roma Restaurant"
-          fill
-          style={{ objectFit: 'cover', opacity: 0.15 }}
-        />
-      </div>
       <div className="container">
         <AnimateOnScroll>
           <div className="section-header">
@@ -481,7 +473,14 @@ function TestimonialsSection() {
                 </div>
                 <p className={styles.testimonialText}>&ldquo;{testimonials[currentIndex]?.comment}&rdquo;</p>
                 <div className={styles.testimonialAuthor}>
-                  <div className={styles.authorAvatar}>{testimonials[currentIndex]?.name?.charAt(0)}</div>
+                  <div className={styles.authorAvatar}>
+                    {testimonials[currentIndex]?.image ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={testimonials[currentIndex].image} alt={testimonials[currentIndex].name} />
+                    ) : (
+                      testimonials[currentIndex]?.name?.charAt(0)
+                    )}
+                  </div>
                   <span className={styles.authorName}>{testimonials[currentIndex]?.name}</span>
                 </div>
               </motion.div>
