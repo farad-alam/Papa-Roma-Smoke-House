@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Flame, ArrowRight, Star, MapPin, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AnimateOnScroll, StaggerContainer, StaggerItem } from './components/ui/AnimateOnScroll';
 import siteConfig from '@/data/siteConfig.json';
 import menuData from '@/data/menus.json';
@@ -68,26 +68,18 @@ function HeroSection() {
 
   return (
     <section className={styles.hero}>
-      {/* Background image slider */}
-      <AnimatePresence mode="popLayout" initial={false}>
-        <motion.div
-          key={currentSlide}
-          className={styles.heroBgImage}
-          initial={{ opacity: 0, scale: 1.1, x: direction > 0 ? 100 : -100 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
-          exit={{ opacity: 0, scale: 1.05, x: direction > 0 ? -100 : 100 }}
-          transition={{ duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-        >
-          <Image
-            src={slide.image}
-            alt="Papa Roma Smoke House"
-            fill
-            priority
-            quality={90}
-            style={{ objectFit: 'cover' }}
-          />
-        </motion.div>
-      </AnimatePresence>
+      {/* Background video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className={styles.heroVideo}
+        poster={heroSlides[0].image}
+      >
+        {/* Place your high-quality video in the public/videos folder */}
+        <source src="/videos/hero-bg.mp4" type="video/mp4" />
+      </video>
 
       {/* Dark gradient overlay */}
       <div className={styles.heroOverlay}></div>
@@ -256,11 +248,22 @@ function HotItemsSection() {
 /* ===================== RECENT OFFER ===================== */
 function OfferSection() {
   return (
-    <div className="container" style={{ padding: '0 20px', marginBottom: 'var(--space-2xl)' }}>
+    <section style={{ width: '100%', marginTop: 'clamp(6rem, 10vw, 10rem)', marginBottom: 'clamp(6rem, 10vw, 10rem)' }}>
+      <div className="container">
+        <AnimateOnScroll>
+          <div className="section-header">
+            <span className="section-label">Exclusive Deals</span>
+            <h2 className="section-title">Special <span className="gold-text">Offers</span></h2>
+            <p className="section-subtitle">Don&apos;t miss out on our limited time promotions and discounts</p>
+          </div>
+        </AnimateOnScroll>
+      </div>
+      
+      <div style={{ width: '100%' }}>
       {siteConfig.imageBanner?.enabled && (
         <AnimateOnScroll>
           <Link href={siteConfig.imageBanner.link || '#'}>
-            <div style={{ position: 'relative', width: '100%', height: 'auto', aspectRatio: '3/1', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)', cursor: 'pointer' }}>
+            <div style={{ position: 'relative', width: '100%', height: 'auto', aspectRatio: '3.5/1', minHeight: '300px', overflow: 'hidden', cursor: 'pointer', display: 'block' }}>
               <Image 
                 src={siteConfig.imageBanner.imageSrc} 
                 alt="Special Offer Banner" 
@@ -275,9 +278,12 @@ function OfferSection() {
       )}
 
       {siteConfig.currentOffer?.enabled && (
-        <OfferBillboard offer={siteConfig.currentOffer} />
+        <div className="container" style={{ padding: '0 20px' }}>
+          <OfferBillboard offer={siteConfig.currentOffer} />
+        </div>
       )}
-    </div>
+      </div>
+    </section>
   );
 }
 
@@ -291,7 +297,7 @@ const menuImages = {
 
 function MenuCategoriesSection() {
   return (
-    <section className={`section ${styles.menuCategories}`}>
+    <section className={`section ${styles.menuCategories}`} style={{ paddingTop: 'clamp(4rem, 8vw, 8rem)', paddingBottom: 0 }}>
       <div className="container">
         <AnimateOnScroll>
           <div className="section-header">
@@ -300,32 +306,32 @@ function MenuCategoriesSection() {
             <p className="section-subtitle">Each menu is a unique culinary journey, crafted by specialized chefs</p>
           </div>
         </AnimateOnScroll>
-        <StaggerContainer className={styles.menuCatGrid}>
-          {menuData.menuTypes.map((menu) => (
-            <StaggerItem key={menu.id}>
-              <Link href={`/menu/${menu.slug}`} className={styles.menuCatCard}>
-                <div className={styles.menuCatImage}>
-                  <Image
-                    src={menuImages[menu.id] || '/images/hero-brisket.png'}
-                    alt={menu.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                  />
-                  <div className={styles.menuCatImageOverlay}></div>
-                </div>
-                <div className={styles.menuCatContent}>
-                  <div className={styles.menuCatIcon}>{menu.icon}</div>
-                  <h3 className={styles.menuCatName}>{menu.name}</h3>
-                  <p className={styles.menuCatDesc}>{menu.description}</p>
-                  <span className={styles.menuCatLink}>
-                    View Menu <ArrowRight size={14} />
-                  </span>
-                </div>
+      </div>
+      <div className={styles.stickyContainer}>
+        {menuData.menuTypes.map((menu, index) => (
+          <div key={menu.id} className={styles.stickyPanel} style={{ zIndex: index + 10 }}>
+            <div className={styles.stickyPanelImage}>
+              <Image
+                src={menuImages[menu.id] || '/images/hero-brisket.png'}
+                alt={menu.name}
+                fill
+                style={{ objectFit: 'cover' }}
+                sizes="100vw"
+                priority={index === 0}
+              />
+              <div className={styles.stickyPanelOverlay}></div>
+            </div>
+            
+            <div className={styles.stickyPanelContent}>
+              <div className={styles.stickyPanelIcon}>{menu.icon}</div>
+              <h2 className={styles.stickyPanelTitle}>{menu.name}</h2>
+              <p className={styles.stickyPanelDesc}>{menu.description}</p>
+              <Link href={`/menu/${menu.slug}`} className="btn btn-primary" style={{ marginTop: 'var(--space-md)' }}>
+                Explore Menu <ArrowRight size={16} />
               </Link>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
@@ -534,9 +540,9 @@ export default function HomePage() {
       <HeroSection />
       <MarqueeSection />
       <HotItemsSection />
-      <OfferSection />
       <MenuCategoriesSection />
       <FeaturedDishesSection />
+      <OfferSection />
       <TestimonialsSection />
       <MapCtaSection />
     </>
