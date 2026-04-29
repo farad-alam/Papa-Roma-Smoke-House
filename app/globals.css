@@ -104,6 +104,26 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* --- Lenis smooth scroll --- */
+/* Disable native CSS smooth scroll while Lenis is driving — prevents the
+   browser's smooth-scroll from fighting Lenis's JS-driven inertia. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--color-bg-primary);

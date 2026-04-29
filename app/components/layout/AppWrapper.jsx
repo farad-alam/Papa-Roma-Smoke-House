@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import LoadingScreen from '../ui/LoadingScreen';
+import SmoothScroll from './SmoothScroll';
 
 export default function AppWrapper({ children }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +24,7 @@ export default function AppWrapper({ children }) {
   };
 
   return (
-    <>
+    <SmoothScroll>
       {isLoading && <LoadingScreen onComplete={handleLoadComplete} />}
       <div style={{
         opacity: showContent ? 1 : 0,
@@ -31,6 +32,6 @@ export default function AppWrapper({ children }) {
       }}>
         {children}
       </div>
-    </>
+    </SmoothScroll>
   );
 }

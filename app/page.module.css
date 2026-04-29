@@ -243,36 +243,259 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
-/* ---- MARQUEE SECTION ---- */
-.marqueeContainer {
-  background: var(--color-bg-primary);
-  padding: var(--space-xl) 0;
-  overflow: hidden;
-  white-space: nowrap;
+/* ---- BRAND HERO SECTION ---- */
+.brandHero {
   position: relative;
+  background: var(--color-bg-primary);
+  padding: clamp(8rem, 20vh, 15rem) 0;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  justify-content: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
 }
 
-.marqueeText {
-  display: inline-block;
-  font-family: var(--font-heading);
-  font-size: clamp(5rem, 10vw, 8rem); /* Slightly bigger */
-  font-weight: 800;
+.brandHeroBg {
+  position: absolute;
+  inset: -15%;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+}
+
+.bgImage {
+  opacity: 0.45;
+  filter: grayscale(0.4) brightness(0.7);
+}
+
+.bgOverlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 30%, var(--color-bg-primary) 100%),
+              linear-gradient(to bottom, var(--color-bg-primary), transparent 15%, transparent 85%, var(--color-bg-primary));
+  z-index: 2;
+}
+
+.brandHeroContent {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 var(--space-xl);
+}
+
+.brandNameContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 90vw;
+}
+
+.brandLineWrapper {
+  overflow: visible;
+  line-height: 0.82;
+  margin-bottom: -0.05em;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.brandLine1 {
+  font-family: var(--font-accent);
+  font-size: clamp(3rem, 17vw, 17rem);
+  font-weight: 900;
+  color: var(--color-cream);
   text-transform: uppercase;
-  letter-spacing: 4px;
-  color: rgba(255, 255, 255, 0.05); /* Subtle fill to increase visibility */
-  -webkit-text-stroke: 2px rgba(212, 168, 83, 0.8); /* Brighter gold outline */
-  text-shadow: 0 0 20px rgba(212, 168, 83, 0.6), 0 0 40px rgba(212, 168, 83, 0.3); /* Eye-catchy glow */
-  animation: scrollText 120s linear infinite;
+  letter-spacing: -0.05em;
+  margin: 0;
+  white-space: nowrap;
+  line-height: 0.82;
+  will-change: transform;
+}
+
+.brandLine2 {
+  font-family: var(--font-accent);
+  font-size: clamp(2.5rem, 14vw, 14rem);
+  font-weight: 900;
+  color: var(--color-cream);
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  margin: 0;
+  white-space: nowrap;
+  line-height: 0.82;
+  will-change: transform;
+}
+
+.brandHeroDecorative {
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-2xl);
+  padding: 0 var(--space-xl);
+  opacity: 0.5;
+  position: relative;
+  z-index: 20;
+}
+
+.decorLabel {
+  font-family: var(--font-accent);
+  text-transform: uppercase;
+  font-size: clamp(0.6rem, 1vw, 0.8rem);
+  letter-spacing: 0.2em;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+/* ---- POSTER CTA SECTION ---- */
+.posterCTA {
+  position: relative;
+  min-height: 90vh;
+  background: var(--color-bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: var(--space-3xl) 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.posterCTABg {
+  position: absolute;
+  inset: -15%;
+  pointer-events: none;
+  z-index: 1;
+  will-change: transform;
+}
+
+.bgImagePoster {
+  opacity: 0.3;
+  filter: grayscale(1) brightness(0.8) contrast(1.1);
+}
+
+.bgOverlayPoster {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 20%, var(--color-bg-primary) 100%),
+              linear-gradient(to bottom, var(--color-bg-primary), transparent 15%, transparent 85%, var(--color-bg-primary));
+  z-index: 2;
+}
+
+.posterCTAContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+}
+
+.posterLineWrapper {
+  overflow: hidden;
+  line-height: 1;
+  margin: 0.15em 0;
+}
+
+.posterLine1, .posterLine2 {
+  display: block;
+  font-family: var(--font-accent);
+  font-weight: 900;
+  color: var(--color-cream);
+  text-transform: uppercase;
+  letter-spacing: -0.05em;
+  text-decoration: none;
+  line-height: 0.9;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
   white-space: nowrap;
 }
 
-@keyframes scrollText {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+.posterLine1 {
+  font-size: clamp(3rem, 10.5vw, 10.5rem);
+  opacity: 0.95;
+}
+
+.posterLine2 {
+  font-size: clamp(3.5rem, 12vw, 12rem);
+}
+
+.posterButtonWrapper {
+  margin-top: var(--space-3xl);
+  display: flex;
+  justify-content: center;
+}
+
+.posterMainButton {
+  padding: 1.5rem 4rem;
+  background: var(--color-gold);
+  color: var(--color-bg-primary);
+  text-decoration: none;
+  font-family: var(--font-accent);
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 30px rgba(212, 168, 83, 0.2);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  text-transform: uppercase;
+}
+
+.posterMainButton:hover {
+  background: var(--color-cream);
+  color: var(--color-bg-primary);
+  box-shadow: 0 20px 50px rgba(212, 168, 83, 0.4);
+}
+
+@media (max-width: 768px) {
+  .posterMainButton {
+    padding: 1.2rem 2.5rem;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 320px;
+    text-align: center;
+  }
+}
+
+.posterFooter {
+  margin-top: var(--space-3xl);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  font-family: var(--font-accent);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.3em;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.posterDivider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+@media (max-width: 768px) {
+  .posterCTA {
+    min-height: 60vh;
+  }
+  .posterLine {
+    font-size: clamp(2.5rem, 15vw, 6rem);
+  }
+  .posterFooter {
+    flex-direction: column;
+    gap: var(--space-sm);
+    letter-spacing: 0.1em;
+  }
+  .posterDivider {
+    width: 30px;
+    height: 1px;
+  }
 }
 
 /* ---- MENU CATEGORIES SECTION ---- */

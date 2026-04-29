@@ -172,15 +172,63 @@ function HeroSection() {
   );
 }
 
-/* ===================== MARQUEE ===================== */
-function MarqueeSection() {
-  // Brand name comes from siteConfig.json — edit there to update
-  const text = `${siteConfig.restaurant.name.toUpperCase()} — `;
+/* ===================== BRAND HERO SECTION ===================== */
+function BrandHeroSection() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, 100]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%']);
 
   return (
-    <section className={styles.marqueeContainer} aria-hidden="true">
-      <div className={styles.marqueeText}>
-        {text.repeat(10)}
+    <section ref={containerRef} className={styles.brandHero}>
+      <motion.div className={styles.brandHeroBg} style={{ y: bgY }}>
+        <Image 
+          src="/images/hero-brisket.png" 
+          alt="Slow Smoked Brisket" 
+          fill 
+          style={{ objectFit: 'cover' }}
+          className={styles.bgImage}
+          priority
+        />
+        <div className={styles.bgOverlay}></div>
+      </motion.div>
+      
+      <div className={`container ${styles.brandHeroContent}`}>
+        <div className={styles.brandNameContainer}>
+          <motion.div 
+            className={styles.brandLineWrapper}
+            initial={{ opacity: 0, y: 100 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <motion.h2 className={styles.brandLine1} style={{ y: y1 }}>
+              PAPA ROMA
+            </motion.h2>
+          </motion.div>
+          
+          <motion.div 
+            className={styles.brandLineWrapper}
+            initial={{ opacity: 0, y: 100 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+          >
+            <motion.h2 className={styles.brandLine2} style={{ y: y2 }}>
+              SMOKE HOUSE
+            </motion.h2>
+          </motion.div>
+        </div>
+        
+        <div className={styles.brandHeroDecorative}>
+          <div className={styles.decorLabel}>Premium BBQ</div>
+          <div className={styles.decorLabel}>Slow-Smoked Perfection</div>
+        </div>
       </div>
     </section>
   );
@@ -675,6 +723,116 @@ function TestimonialsSection() {
   );
 }
 
+/* ===================== POSTER CTA SECTION ===================== */
+function PosterCTASection() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], ['-10%', '10%']);
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const lineVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 40 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        duration: 1.2,
+        ease: [0.16, 1, 0.3, 1]
+      }
+    }
+  };
+
+  return (
+    <section ref={containerRef} className={styles.posterCTA}>
+      <motion.div className={styles.posterCTABg} style={{ y: bgY }}>
+        <Image 
+          src="/images/abstract-smoke.png" 
+          alt="Abstract Smoke" 
+          fill 
+          style={{ objectFit: 'cover' }}
+          className={styles.bgImagePoster}
+          priority
+        />
+        <div className={styles.bgOverlayPoster}></div>
+      </motion.div>
+      
+      <div className="container">
+        <motion.div 
+          className={styles.posterCTAContent}
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+        >
+          <div className={styles.posterLineWrapper}>
+            <motion.a 
+              href="#reservation" 
+              className={styles.posterLine1} 
+              variants={lineVariants}
+              whileHover={{ x: 20, color: 'var(--color-gold)' }}
+            >
+              BOOK YOUR TABLE
+            </motion.a>
+          </div>
+          
+          <div className={styles.posterLineWrapper}>
+            <motion.a 
+              href="https://wa.me/yournumber" 
+              className={styles.posterLine2} 
+              variants={lineVariants}
+              whileHover={{ x: -20, color: 'var(--color-gold)' }}
+            >
+              TASTE THE FIRE
+            </motion.a>
+          </div>
+
+          <motion.div 
+            className={styles.posterButtonWrapper}
+            variants={lineVariants}
+          >
+            <motion.a 
+              href={`https://wa.me/${siteConfig.restaurant.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.posterMainButton}
+              whileHover={{ scale: 1.05, boxShadow: '0 20px 40px rgba(212, 168, 83, 0.4)' }}
+              whileTap={{ scale: 0.98 }}
+            >
+              RESERVE YOUR TABLE
+            </motion.a>
+          </motion.div>
+
+          <motion.div 
+            className={styles.posterFooter}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 0.4 }}
+            transition={{ delay: 1, duration: 1 }}
+          >
+            <span>PAPA ROMA SMOKE HOUSE</span>
+            <div className={styles.posterDivider}></div>
+            <span>ESTD 2024</span>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 /* ===================== MAP & CTA ===================== */
 function MapCtaSection() {
   const { restaurant } = siteConfig;
@@ -714,12 +872,13 @@ export default function HomePage() {
     <>
       <FloatingFoodParticles />
       <HeroSection />
-      <MarqueeSection />
+      <BrandHeroSection />
       <HotItemsSection />
       <MenuCategoriesSection />
       <SignatureDishesSection />
       <OfferSection />
       <TestimonialsSection />
+      <PosterCTASection />
       <MapCtaSection />
     </>
   );
