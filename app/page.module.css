@@ -345,98 +345,319 @@
   text-shadow: 0 2px 10px rgba(0,0,0,0.8);
 }
 
-/* ---- FEATURED DISHES ---- */
-.featured { background: var(--color-bg-secondary); }
-
-.featuredGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-lg);
+/* ---- SIGNATURE DISHES (Sticky Cinematic Scroll) ---- */
+.sigSection {
+  background: var(--color-bg-primary);
+  position: relative;
 }
 
-.dishCard {
+.sigSticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  perspective: 1100px;
+  background:
+    radial-gradient(ellipse at 75% 75%, rgba(212, 168, 83, 0.05) 0%, transparent 55%),
+    radial-gradient(ellipse at 25% 25%, rgba(230, 57, 70, 0.04) 0%, transparent 55%),
+    var(--color-bg-primary);
+}
+
+/* Top-left brand identity (persistent) */
+.sigBrandLabel {
+  position: absolute;
+  top: clamp(2rem, 5vh, 3.5rem);
+  left: clamp(2rem, 5vw, 5rem);
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sigBrandSubLabel {
+  font-family: var(--font-accent);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: var(--color-gold);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sigBrandSubLabel::before {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 1px;
+  background: var(--color-gold);
+  opacity: 0.55;
+}
+
+.sigBrandTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-text);
+  letter-spacing: -0.015em;
+}
+
+/* Bottom-right total counter (persistent) */
+.sigCounter {
+  position: absolute;
+  bottom: clamp(2rem, 5vh, 3.5rem);
+  right: clamp(2rem, 5vw, 5rem);
+  z-index: 10;
+  font-family: var(--font-accent);
+  font-size: var(--fs-xs);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* Image traveling across the screen */
+.cineImage {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: clamp(280px, 38vw, 540px);
+  height: clamp(380px, 60vh, 680px);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow:
+    0 50px 130px rgba(0, 0, 0, 0.75),
+    0 0 0 1px rgba(212, 168, 83, 0.08);
+  z-index: 2;
+  will-change: transform, opacity;
+}
+
+.cineImageSheen {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(212, 168, 83, 0.06) 0%,
+    transparent 40%,
+    transparent 60%,
+    rgba(0, 0, 0, 0.35) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Big number — bottom left, changes per dish */
+.cineNum {
+  position: absolute;
+  bottom: clamp(2rem, 5vh, 3.5rem);
+  left: clamp(2rem, 5vw, 6rem);
+  font-family: var(--font-heading);
+  font-size: clamp(4rem, 11vw, 11rem);
+  font-weight: 800;
+  line-height: 0.85;
+  color: var(--color-cream);
+  opacity: 0.55;
+  z-index: 4;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.05em;
+  will-change: transform, opacity;
+}
+
+/* Text — top right, changes per dish */
+.cineText {
+  position: absolute;
+  top: clamp(7rem, 14vh, 10rem);
+  right: clamp(2rem, 5vw, 5rem);
+  max-width: 380px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  text-align: right;
+  align-items: flex-end;
+  will-change: transform, opacity;
+}
+
+.cineCategory {
+  font-family: var(--font-accent);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: var(--color-gold);
+}
+
+.cineTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.cineDesc {
+  font-size: 0.95rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.cineMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-top: var(--space-sm);
+}
+
+.cinePrice {
+  font-family: var(--font-accent);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: -0.02em;
+}
+
+.cinePrice small {
+  font-size: var(--fs-xs);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  letter-spacing: 0;
+}
+
+.cineCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-accent);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--color-gold);
+  border-bottom: 1px solid rgba(212, 168, 83, 0.35);
+  padding-bottom: 3px;
+  transition: gap var(--transition-base), color var(--transition-base);
+}
+
+.cineCta:hover {
+  color: var(--color-gold-hover);
+  gap: 12px;
+}
+
+/* ---- Mobile fallback ---- */
+.sigMobileSection {
+  background: var(--color-bg-primary);
+  padding: var(--space-section) 0;
+}
+
+.sigMobileGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+.sigMobileCard {
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: all var(--transition-base);
 }
 
-.dishCard:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-border-hover);
-  box-shadow: var(--shadow-md);
-}
-
-.dishImageWrapper {
+.sigMobileImage {
   position: relative;
   width: 100%;
   aspect-ratio: 16/10;
   overflow: hidden;
 }
 
-.dishCard:hover .dishImageWrapper img {
-  transform: scale(1.1);
-  transition: transform 3s ease;
-}
-
-.dishImageOverlay {
+.sigMobileNum {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 50%, rgba(10, 10, 10, 0.3) 100%);
-  z-index: 1;
+  bottom: -0.5rem;
+  left: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 4.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-cream);
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+  z-index: 2;
+  letter-spacing: -0.05em;
 }
 
-.dishInfo { padding: var(--space-lg); }
+.sigMobileContent {
+  padding: var(--space-xl) var(--space-lg) var(--space-lg);
+}
 
-.dishMenu {
+.sigMobileCategory {
   font-family: var(--font-accent);
   font-size: var(--fs-xs);
   color: var(--color-gold);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   font-weight: 600;
 }
 
-.dishName {
+.sigMobileTitle {
   font-family: var(--font-heading);
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 6px 0;
-  line-height: 1.3;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 8px 0 12px;
+  line-height: 1.2;
 }
 
-.dishDesc {
-  font-size: var(--fs-small);
+.sigMobileDesc {
+  font-size: 0.9rem;
   color: var(--color-text-muted);
-  line-height: 1.5;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  line-height: 1.6;
 }
 
-.dishBottom {
-  margin-top: var(--space-md);
+.sigMobileMeta {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-divider);
 }
 
-.dishPrice {
+.sigMobilePrice {
   font-family: var(--font-accent);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--color-accent);
 }
 
-.dishPrice small {
+.sigMobilePrice small {
   font-size: var(--fs-xs);
   font-weight: 400;
   color: var(--color-text-muted);
 }
 
-.featuredCta { text-align: center; margin-top: var(--space-2xl); }
+.sigMobileCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-accent);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-gold);
+  border-bottom: 1px solid rgba(212, 168, 83, 0.3);
+  padding-bottom: 2px;
+}
+
+/* Footer CTA */
+.sigFooter {
+  text-align: center;
+  padding: var(--space-4xl) 0;
+  background: var(--color-bg-primary);
+}
 
 /* ---- TESTIMONIALS SECTION ---- */
 .testimonials {
@@ -793,12 +1014,32 @@
   margin-bottom: var(--space-xl);
 }
 /* ---- RESPONSIVE ---- */
+@media (max-width: 1200px) {
+  .cineText { max-width: 320px; }
+  .cineImage {
+    width: clamp(260px, 42vw, 460px);
+    height: clamp(340px, 58vh, 600px);
+  }
+}
+
 @media (max-width: 1024px) {
   .menuCatGrid { grid-template-columns: repeat(2, 1fr); }
-  .featuredGrid { grid-template-columns: repeat(2, 1fr); }
   .mapGrid { grid-template-columns: 1fr; gap: var(--space-2xl); }
   .hotGrid { flex-direction: column; height: 600px; }
   .hotGrid .hotCardWrapper:hover { flex: 3; }
+
+  .sigBrandLabel { top: clamp(1.5rem, 4vh, 2.5rem); left: clamp(1.5rem, 4vw, 3rem); }
+  .sigCounter { bottom: clamp(1.5rem, 4vh, 2.5rem); right: clamp(1.5rem, 4vw, 3rem); }
+  .cineNum { font-size: clamp(3rem, 10vw, 9rem); left: clamp(1.5rem, 4vw, 4rem); }
+  .cineText {
+    max-width: 280px;
+    top: clamp(6rem, 13vh, 9rem);
+    right: clamp(1.5rem, 4vw, 3rem);
+  }
+  .cineImage {
+    width: clamp(240px, 44vw, 400px);
+    height: clamp(320px, 56vh, 540px);
+  }
 }
 
 @media (max-width: 768px) {
@@ -806,7 +1047,6 @@
   .statNum { font-size: 1.4rem; }
   .testimonialSlider { flex-direction: column; }
   .tSliderBtn { display: none; }
-  .featuredGrid { grid-template-columns: 1fr; }
   .hotGrid { flex-direction: column; height: 500px; }
   .hotCardWrapper { flex: 1; }
   .offerOverlay { background: linear-gradient(0deg, rgba(10,10,10,0.95) 0%, rgba(10,10,10,0.7) 60%, transparent 100%); }
@@ -818,4 +1058,5 @@
   .menuCatGrid { grid-template-columns: 1fr; }
   .heroCtas { flex-direction: column; }
   .ctaButtons { flex-direction: column; }
+  .sigMobileMeta { flex-direction: column; align-items: flex-start; gap: var(--space-sm); }
 }

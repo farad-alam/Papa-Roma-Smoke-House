@@ -1,3 +1,15 @@
+
+- More smoother the scrolling like other website
+- Bold Brand Name
+- Scrolling Zoom out, with inside anather section 
+- CTA Big ang Bold like : Reserve a table
+- Full screen footer with brand animated brand name at the footer. 
+
+
+
+
+
+
 -Hero section: 
     -Button 'Reserve a table' should be glowing button.
     -hero section sliding image duration make it to 3.5s.

@@ -4,9 +4,26 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from './LoadingScreen.module.css';
 
+// Stable ember config — generated once on client to avoid SSR/client mismatch
+const EMBER_COUNT = 20;
+
 export default function LoadingScreen({ onComplete }) {
   const [progress, setProgress] = useState(0);
   const [phase, setPhase] = useState('loading'); // 'loading' | 'reveal' | 'done'
+  const [embers, setEmbers] = useState([]); // populated on client only
+
+  useEffect(() => {
+    setEmbers(
+      Array.from({ length: EMBER_COUNT }, () => ({
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        animationDelay: `${Math.random() * 3}s`,
+        animationDuration: `${2 + Math.random() * 3}s`,
+        width: `${2 + Math.random() * 4}px`,
+        height: `${2 + Math.random() * 4}px`,
+      }))
+    );
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -46,19 +63,8 @@ export default function LoadingScreen({ onComplete }) {
         >
           {/* Background embers */}
           <div className={styles.embers}>
-            {[...Array(20)].map((_, i) => (
-              <div
-                key={i}
-                className={styles.ember}
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 3}s`,
-                  animationDuration: `${2 + Math.random() * 3}s`,
-                  width: `${2 + Math.random() * 4}px`,
-                  height: `${2 + Math.random() * 4}px`,
-                }}
-              />
+            {embers.map((style, i) => (
+              <div key={i} className={styles.ember} style={style} />
             ))}
           </div>
 

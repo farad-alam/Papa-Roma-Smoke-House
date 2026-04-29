@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Flame, ArrowRight, Star, MapPin, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from 'framer-motion';
 import { AnimateOnScroll, StaggerContainer, StaggerItem } from './components/ui/AnimateOnScroll';
 import siteConfig from '@/data/siteConfig.json';
 import menuData from '@/data/menus.json';
@@ -47,17 +47,11 @@ const heroSlides = siteConfig.heroSlides;
 
 function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [direction, setDirection] = useState(1);
 
   const nextSlide = useCallback(() => {
-    setDirection(1);
     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
   }, []);
 
-  const prevSlide = () => {
-    setDirection(-1);
-    setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
-  };
 
   useEffect(() => {
     const interval = setInterval(nextSlide, 3500);
@@ -154,7 +148,7 @@ function HeroSection() {
               <button
                 key={i}
                 className={`${styles.heroDot} ${i === currentSlide ? styles.heroDotActive : ''}`}
-                onClick={() => { setDirection(i > currentSlide ? 1 : -1); setCurrentSlide(i); }}
+                onClick={() => setCurrentSlide(i)}
                 aria-label={`Go to slide ${i + 1}`}
               />
             ))}
@@ -337,7 +331,7 @@ function MenuCategoriesSection() {
   );
 }
 
-/* ===================== FEATURED DISHES ===================== */
+/* ===================== SIGNATURE DISHES (Cinematic Scroll) ===================== */
 const dishImages = {
   sm1: '/images/hero-brisket.png',
   sm2: '/images/gallery-grill.png',
@@ -365,65 +359,248 @@ const dishImages = {
   ds12: '/images/food-dessert.png',
 };
 
-function FeaturedDishesSection() {
+function DishImageLayer({ dish, index, total, progress }) {
+  const slot = 1 / total;
+  const tStart = Math.max(0, (index - 0.5) * slot);
+  const tEnd = Math.min(1, (index + 1.5) * slot);
+
+  const xFrom  = index === 0 ? '14vw'  : index === 1 ? '18vw'  : '45vw';
+  const yFrom  = index === 0 ? '10vh'  : index === 1 ? '14vh'  : '38vh';
+  const opFrom = index === 0 ? 0.8     : index === 1 ? 0.75    : 0;
+  const scFrom = index === 0 ? 0.9     : index === 1 ? 0.88    : 0.72;
+
+  const imageX = useTransform(progress, [tStart, tEnd], [xFrom, '-45vw']);
+  const imageY = useTransform(progress, [tStart, tEnd], [yFrom, '-38vh']);
+  const imageRotate = useTransform(progress, [tStart, tEnd], [4, -4]);
+  const imageRotateY = useTransform(progress, [tStart, tEnd], [14, -14]);
+  const imageOpacity = useTransform(
+    progress,
+    [tStart, Math.min(tEnd, tStart + slot * 0.35), Math.max(tStart, tEnd - slot * 0.35), tEnd],
+    [opFrom, 1, 1, 0]
+  );
+  const imageScale = useTransform(
+    progress,
+    [tStart, (tStart + tEnd) / 2, tEnd],
+    [scFrom, 1, 0.78]
+  );
+
+  return (
+    <motion.div
+      className={styles.cineImage}
+      style={{ x: imageX, y: imageY, opacity: imageOpacity, scale: imageScale, rotate: imageRotate, rotateY: imageRotateY }}
+    >
+      <Image
+        src={dishImages[dish.id] || '/images/hero-brisket.png'}
+        alt={dish.name}
+        fill
+        style={{ objectFit: 'cover' }}
+        sizes="(max-width: 1200px) 60vw, 45vw"
+        priority={index < 2}
+      />
+      <div className={styles.cineImageSheen} />
+    </motion.div>
+  );
+}
+
+function SignatureDishesCinematic({ dishes }) {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start start', 'end end'],
+  });
+  const N = dishes.length;
+  const [activeDish, setActiveDish] = useState(0);
+  const [scrollDir, setScrollDir] = useState(1);
+  const activeDishRef = useRef(0);
+  const prevProgressRef = useRef(0);
+
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    const dir = latest >= prevProgressRef.current ? 1 : -1;
+    prevProgressRef.current = latest;
+    const idx = Math.min(Math.floor(latest * N), N - 1);
+    if (idx !== activeDishRef.current) {
+      activeDishRef.current = idx;
+      setScrollDir(dir);
+      setActiveDish(idx);
+    }
+  });
+
+  const dish = dishes[activeDish];
+  const yOffset = 50;
+  const ySmall = 22;
+
+  return (
+    <section
+      ref={containerRef}
+      className={styles.sigSection}
+      style={{ height: `${(N + 1) * 100}vh` }}
+    >
+      <div className={styles.sigSticky}>
+        {/* Section identity — top left, persistent */}
+        <div className={styles.sigBrandLabel}>
+          <span className={styles.sigBrandSubLabel}>Chef&apos;s Selection</span>
+          <h2 className={styles.sigBrandTitle}>
+            Signature <span className="accent-text">Dishes</span>
+          </h2>
+        </div>
+
+        {/* Total counter — bottom right */}
+        <div className={styles.sigCounter}>
+          <span>{String(N).padStart(2, '0')} dishes</span>
+        </div>
+
+        {/* Images — scroll-driven diagonal travel */}
+        {dishes.map((d, i) => (
+          <DishImageLayer
+            key={d.id}
+            dish={d}
+            index={i}
+            total={N}
+            progress={scrollYProgress}
+          />
+        ))}
+
+        {/* Big number — direction-aware, simultaneous exit/enter */}
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={`num-${activeDish}`}
+            className={styles.cineNum}
+            initial={{ opacity: 0, y: scrollDir * yOffset }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: scrollDir * -yOffset }}
+            transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+            aria-hidden="true"
+          >
+            {String(activeDish + 1).padStart(2, '0')}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Text — direction-aware, simultaneous exit/enter */}
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={`text-${activeDish}`}
+            className={styles.cineText}
+            initial={{ opacity: 0, y: scrollDir * ySmall }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: scrollDir * -ySmall }}
+            transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
+          >
+            <span className={styles.cineCategory}>{dish.menuName}</span>
+            <h3 className={styles.cineTitle}>{dish.name}</h3>
+            {dish.description && <p className={styles.cineDesc}>{dish.description}</p>}
+            <div className={styles.cineMeta}>
+              <span className={styles.cinePrice}>
+                ৳{dish.price}
+                {dish.unit && <small> / {dish.unit}</small>}
+              </span>
+              <Link href={`/menu/${dish.menuSlug}`} className={styles.cineCta}>
+                View Dish <ArrowRight size={14} />
+              </Link>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
+function SignatureDishesMobile({ dishes }) {
+  return (
+    <section className={styles.sigMobileSection}>
+      <div className="container">
+        <AnimateOnScroll>
+          <div className="section-header">
+            <span className="section-label">Chef&apos;s Selection</span>
+            <h2 className="section-title">
+              Signature <span className="accent-text">Dishes</span>
+            </h2>
+            <p className="section-subtitle">
+              Handpicked favorites from each of our four menus
+            </p>
+          </div>
+        </AnimateOnScroll>
+        <StaggerContainer className={styles.sigMobileGrid}>
+          {dishes.map((dish, i) => (
+            <StaggerItem key={dish.id}>
+              <article className={styles.sigMobileCard}>
+                <div className={styles.sigMobileImage}>
+                  <Image
+                    src={dishImages[dish.id] || '/images/hero-brisket.png'}
+                    alt={dish.name}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="100vw"
+                  />
+                  <span className={styles.sigMobileNum}>
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                </div>
+                <div className={styles.sigMobileContent}>
+                  <span className={styles.sigMobileCategory}>{dish.menuName}</span>
+                  <h3 className={styles.sigMobileTitle}>{dish.name}</h3>
+                  {dish.description && (
+                    <p className={styles.sigMobileDesc}>{dish.description}</p>
+                  )}
+                  <div className={styles.sigMobileMeta}>
+                    <span className={styles.sigMobilePrice}>
+                      ৳{dish.price}
+                      {dish.unit && <small> / {dish.unit}</small>}
+                    </span>
+                    <Link href={`/menu/${dish.menuSlug}`} className={styles.sigMobileCta}>
+                      View Dish <ArrowRight size={14} />
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
+      </div>
+    </section>
+  );
+}
+
+function SignatureDishesSection() {
   const featuredItems = [];
   menuData.menuTypes.forEach((mt) => {
     mt.categories.forEach((cat) => {
       cat.items.forEach((item) => {
         if (item.featured) {
-          featuredItems.push({ ...item, menuName: mt.name, categoryName: cat.name });
+          featuredItems.push({
+            ...item,
+            menuName: mt.name,
+            menuSlug: mt.slug,
+            categoryName: cat.name,
+          });
         }
       });
     });
   });
-  const displayItems = featuredItems.slice(0, 8);
+  const dishes = featuredItems.slice(0, 6);
+
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 900);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   return (
-    <section className={`section ${styles.featured}`}>
-      <div className="container">
+    <>
+      {isMobile ? (
+        <SignatureDishesMobile dishes={dishes} />
+      ) : (
+        <SignatureDishesCinematic dishes={dishes} />
+      )}
+      <div className={styles.sigFooter}>
         <AnimateOnScroll>
-          <div className="section-header">
-            <span className="section-label">Chef&apos;s Selection</span>
-            <h2 className="section-title">Signature <span className="accent-text">Dishes</span></h2>
-            <p className="section-subtitle">Handpicked favorites from each of our four menus</p>
-          </div>
-        </AnimateOnScroll>
-        <StaggerContainer className={styles.featuredGrid}>
-          {displayItems.map((item) => (
-            <StaggerItem key={item.id}>
-              <div className={styles.dishCard}>
-                <div className={styles.dishImageWrapper}>
-                  <Image
-                    src={dishImages[item.id] || '/images/hero-brisket.png'}
-                    alt={item.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    sizes="(max-width: 768px) 100vw, 25vw"
-                  />
-                  <div className={styles.dishImageOverlay}></div>
-                </div>
-                <div className={styles.dishInfo}>
-                  <span className={styles.dishMenu}>{item.menuName}</span>
-                  <h4 className={styles.dishName}>{item.name}</h4>
-                  {item.description && <p className={styles.dishDesc}>{item.description}</p>}
-                  <div className={styles.dishBottom}>
-                    <span className={styles.dishPrice}>
-                      ৳{item.price}
-                      {item.unit && <small> / {item.unit}</small>}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
-        <AnimateOnScroll className={styles.featuredCta}>
           <Link href="/menu/smoke-house" className="btn btn-secondary">
             View Full Menu <ArrowRight size={16} />
           </Link>
         </AnimateOnScroll>
       </div>
-    </section>
+    </>
   );
 }
 
@@ -540,7 +717,7 @@ export default function HomePage() {
       <MarqueeSection />
       <HotItemsSection />
       <MenuCategoriesSection />
-      <FeaturedDishesSection />
+      <SignatureDishesSection />
       <OfferSection />
       <TestimonialsSection />
       <MapCtaSection />
